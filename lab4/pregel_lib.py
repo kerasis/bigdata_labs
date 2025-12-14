@@ -29,7 +29,7 @@ def pregel(
         # обновляем состояние на основе входящих сообщений
         new_state: Dict[VertexId, float] = {}
         for v, messages in inbox.items():
-            # передаём в superstep_fn входящие сообщения (второй вызов)
+            # передаём в superstep_fn входящие сообщения 
             new_val = superstep_fn(v, state[v], messages, graph[v])
             new_state[v] = new_val
 

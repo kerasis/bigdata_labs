@@ -57,7 +57,7 @@ def index():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    # 1) вставляем документы
+    # документы
     url_to_id: Dict[str, int] = {}
     for url, data in pages.items():
         cur.execute(
@@ -68,7 +68,7 @@ def index():
 
     conn.commit()
 
-    # 2) термы
+    # термы
     for url, data in pages.items():
         doc_id = url_to_id[url]
         tokens = list(tokenize(data["text"]))
@@ -81,7 +81,7 @@ def index():
 
     conn.commit()
 
-    # 3) ссылки только между известными документами
+    # ссылки только между известными документами
     for url, data in pages.items():
         src_id = url_to_id[url]
         for dst_url in data["links"]:

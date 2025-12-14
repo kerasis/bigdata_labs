@@ -14,7 +14,6 @@ def load_index():
     cur.execute("SELECT COUNT(*) FROM documents")
     doc_count = cur.fetchone()[0]
 
-    # term -> {doc_id: tf}
     index: Dict[str, Dict[int, int]] = defaultdict(dict)
     cur.execute("SELECT term, doc_id, tf FROM terms")
     for term, doc_id, tf in cur.fetchall():
@@ -26,7 +25,7 @@ def load_index():
         for doc_id, tf in postings.items():
             doc_len[doc_id] += tf
 
-    # doc_id -> (title, url)
+    # doc_id (title, url)
     cur.execute("SELECT id, title, url FROM documents")
     docs = {row[0]: {"title": row[1], "url": row[2]} for row in cur.fetchall()}
 
@@ -83,7 +82,6 @@ def search_daat(query: str, top_k: int = 5) -> List[Tuple[int, float]]:
     if not postings_lists:
         return [], docs
 
-    # cursors[i] указывает на текущую позицию в postings_lists[i]
     cursors = [0] * len(postings_lists)
     scores: Dict[int, float] = defaultdict(float)
 
@@ -98,7 +96,6 @@ def search_daat(query: str, top_k: int = 5) -> List[Tuple[int, float]]:
 
         d = min(current_docs)
 
-        # считаем score для документа d
         for i, plist in enumerate(postings_lists):
             if cursors[i] >= len(plist):
                 continue
@@ -108,7 +105,6 @@ def search_daat(query: str, top_k: int = 5) -> List[Tuple[int, float]]:
                 w_t = idf.get(term, 0.0)
                 scores[d] += (tf / doc_len[d]) * w_t
                 cursors[i] += 1
-        # если в каком-то списке doc_id > d, просто двигаемся дальше, d уже обработан
-
+      
     ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
     return ranked, docs

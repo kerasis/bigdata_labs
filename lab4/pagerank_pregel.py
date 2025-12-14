@@ -32,7 +32,7 @@ def pagerank_pregel():
     base = (1.0 - damping) / N
 
     def superstep_fn(v, current_value, incoming_messages, neighbors):
-        # incoming_messages пустой -> вернём то, что нужно разослать
+        # incoming_messages пустой - вернём то, что нужно разослать
         if not incoming_messages:
             return current_value
         # используем сумму входящих

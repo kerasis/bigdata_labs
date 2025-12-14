@@ -18,7 +18,7 @@ def fetch_html(url: str) -> str:
 def extract_text_and_links(url: str, html: str) -> Tuple[str, List[str]]:
     soup = BeautifulSoup(html, "lxml")
 
-    # заголовок документа
+    # заголовок 
     title_tag = soup.find("h1")
     title = title_tag.get_text(strip=True) if title_tag else url
 
@@ -38,7 +38,6 @@ def extract_text_and_links(url: str, html: str) -> Tuple[str, List[str]]:
 
 
 def crawl() -> Dict[str, Dict]:
-    # Простой обход 
     result: Dict[str, Dict] = {}
     seen: Set[str] = set()
 
