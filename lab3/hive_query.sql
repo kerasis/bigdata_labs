@@ -1,0 +1,47 @@
+DROP TABLE IF EXISTS flights_ext;
+
+CREATE EXTERNAL TABLE flights_ext (
+  IND INTEGER,
+  IND2 INTEGER,
+  FL_DATE STRING, 
+  OP_CARRIER STRING,
+  OP_CARRIER_FL_NUM INTEGER,
+  ORIGIN STRING,
+  DEST STRING,
+  CRS_DEP_TIME INTEGER,
+  DEP_TIME FLOAT,
+  DEP_DELAY FLOAT,
+  TAXI_OUT FLOAT,
+  WHEELS_OFF FLOAT,
+  WHEELS_ON FLOAT,
+  TAXI_IN FLOAT,
+  CRS_ARR_TIME INTEGER,
+  ARR_TIME FLOAT,
+  ARR_DELAY  FLOAT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/user/root/data_airlines'
+TBLPROPERTIES (
+ "skip.header.line.count"="1"  
+);
+
+
+DROP TABLE IF EXISTS flights_avg_delay;
+
+CREATE TABLE flights_avg_delay AS
+SELECT
+    OP_CARRIER,
+    AVG(ARR_DELAY) AS avg_arr_delay
+FROM
+    flights_ext
+WHERE
+    ARR_DELAY > 0
+GROUP BY
+    OP_CARRIER;
+-- Вывод результата в терминал
+
+SELECT * FROM flights_avg_delay
+  ORDER BY avg_arr_delay DESC;
+
